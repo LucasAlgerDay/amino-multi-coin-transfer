@@ -52,7 +52,10 @@ def vip():
     fok=client.get_from_code(vips)
     communityid=fok.path[1:fok.path.index("/")]
     objectId =  bot.community.fetch_object_id(vips)
-    bot.community.join_community(comId = communityid)
+    try:
+        bot.community.join_community(comId = communityid)
+    except:
+        print("Asegurate de que la comunidad sea publica, si la cuenta ya se encuentra dentro de la comunidad ignora este mensaje xd")
     for i in tqdm(range(total // 500)):
         try:
             bot.community.subscribe(userId=objectId, comId= communityid)
@@ -71,7 +74,10 @@ def blogs():
     fok=client.get_from_code(blog)
     communityid=fok.path[1:fok.path.index("/")]
     objectId =  bot.community.fetch_object_id(blog)
-    bot.community.join_community(comId = communityid)
+    try:
+        bot.community.join_community(comId = communityid)
+    except:
+        print("Asegurate de que la comunidad sea publica, si la cuenta ya se encuentra dentro de la comunidad ignora este mensaje xd")
     for i in tqdm(range(total // 500)):
         bot.community.send_coins(coins= 500, blogId=objectId, comId= communityid)
         count += 500
@@ -87,7 +93,10 @@ def wikis():
     fok=client.get_from_code(wiki)
     communityid=fok.path[1:fok.path.index("/")]
     objectId =  bot.community.fetch_object_id(wiki)
-    bot.community.join_community(comId = communityid)
+    try:
+        bot.community.join_community(comId = communityid)
+    except:
+        print("Asegurate de que la comunidad sea publica, si la cuenta ya se encuentra dentro de la comunidad ignora este mensaje xd")
     for i in tqdm(range(total // 500)):
         bot.community.send_coins(coins= 500, wikiId=objectId, comId= communityid)
         count += 500
@@ -102,7 +111,10 @@ def chats():
     fok=client.get_from_code(chat)
     communityid=fok.path[1:fok.path.index("/")]
     objectId =  bot.community.fetch_object_id(chat)
-    bot.community.join_community(comId = communityid)
+    try:
+        bot.community.join_community(comId = communityid)
+    except:
+        print("Asegurate de que la comunidad sea publica, si la cuenta ya se encuentra dentro de la comunidad ignora este mensaje xd")
     for i in tqdm(range(total // 500)):
         bot.community.send_coins(coins= 500, chatId=objectId, comId= communityid)
         count += 500
