@@ -18,6 +18,7 @@ from requests import get, Session as HTTPClient, Response as HTTPResponse
 from requests.exceptions import ConnectionError, ReadTimeout, SSLError, ProxyError, ConnectTimeout
 from requests_toolbelt import MultipartEncoder
 from urllib.parse import urlencode
+from retry import retry
 from colorama import Fore, Style
 from ..entities.messages import *
 from ..entities.threads import *

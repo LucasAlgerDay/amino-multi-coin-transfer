@@ -1639,8 +1639,18 @@ class Community:
         ```
         """
         data = {"timestamp": int(time() * 1000)}
-        [data.update({key: value}) for key, value in {"nickname": nickname, "content": content}.items() if value is not None]
-        return UserProfile(self.session.handler(method="POST", url=f"/x{self.community_id if comId is None else comId}/s/user-profile/{self.userId}", data=data))
+        [
+            data.update({key: value}) for key, value in {
+                "nickname": nickname,
+                "content": content
+                }.items() if value is not None
+        ]
+        return UserProfile(
+            self.session.handler(
+                method="POST",
+                url=f"/x{self.community_id if comId is None else comId}/s/user-profile/{self.userId}",
+                data=data
+                ))
 
     @community
     def fetch_user_comments(self, userId: str, sorting: str = "newest", start: int = 0, size: int = 25, comId: Union[str, int] = None) -> ApiResponse: #TODO: Add CCommentList class

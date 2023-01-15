@@ -2,7 +2,7 @@ from .generate import *
 
 class RequestHandler:
     """A class that handles all requests"""
-    def __init__(self, bot, session: HTTPClient, proxy: Optional[str] = None):
+    def __init__(self, bot, session: HTTPClient, proxy: Optional[str] = None, token: str=None):
         self.bot            = bot
         self.pinged:        bool = False
         self.gg:            int = 0
@@ -27,7 +27,7 @@ class RequestHandler:
             "CONNECTION": "Keep-Alive",
             "ACCEPT-ENCODING": "gzip, deflate, br",
             "NDCAUTH": f"sid={self.sid}",
-            "AUID": self.userId,
+            "AUID": self.userId
             }
 
     def fetch_request(self, method: str) -> Callable:
@@ -52,7 +52,7 @@ class RequestHandler:
         url, headers, data = self.service_handler(url, data, content_type)
         if all([method=="POST", data is None]):
             headers["CONTENT-TYPE"] = "application/octet-stream"
-
+        
         try:
             response: HTTPResponse = self.fetch_request(method)(
                 url, data=data, headers=headers, proxies=self.proxy
@@ -88,16 +88,36 @@ class RequestHandler:
         if data or content_type:
             headers, data = self.fetch_signature(url, data, headers, content_type)
 
-        return service_url, headers, data
+        return service_url, headers, self.ensure_utf8(data)
+
+    def ensure_utf8(self, data: Union[dict, bytes, None]) -> Union[dict, bytes, None]:
+        if data is None: return data
+
+        def handle_dict(data: dict):
+            return {key: self.ensure_utf8(value) for key, value in data.items()}
+
+        def handle_str(data: str):
+            return data.encode("utf-8")
+
+        handlers = {
+            dict: handle_dict,
+            str: handle_str
+        }
+
+        return handlers.get(type(data), lambda x: x)(data)
 
     def fetch_signature(
         self,
         url: str,
-        data: str,
+        data: Union[dict, bytes, None],
         headers: dict,
         content_type: str = None
     ) -> Tuple[dict, Union[dict, bytes, None]]:
-        data = data if isinstance(data, bytes) else dumps(data)
+
+        if not isinstance(data, bytes):
+            data.update({"auid": self.userId})
+            data = dumps(data)
+
         headers.update({
             "CONTENT-LENGTH": f"{len(data)}",
             "CONTENT-TYPE": content_type or "application/json; charset=utf-8",
@@ -123,23 +143,19 @@ class RequestHandler:
 
     @response
     def signature(self, data: str) -> HTTPResponse:
-        return self.session.get(
-            url=f"https://gg.o5hej45uqb.repl.co/signature?data={data}",
-            headers=self.base_headers
+        return self.session.post(
+            url="https://pymino.o5hej45uqb.repl.co/signature",
+            headers=self.base_headers,
+            data={"data": data}
             )
 
+    @retry(tries=8, delay=2, backoff=2)
     def parse_signature(self, data: str) -> dict:
-        while True:
-            try:
-                response = self.signature(data)
-                if response.status_code == 200:
-                    return loads(response.text)["signature"]
-                # else:
-                #     self.print_status("Failed to generate signature from server, retrying...")
-            except Exception:
-                self.print_status("Failed to generate signature from server.", "error")
-                break
+        response = self.signature(data)
 
+        if response.status_code == 200:
+            return loads(response.text)["signature"]
+            
     def ping_server(self) -> HTTPResponse:
         try:
             self.signature(data="ping")
@@ -150,7 +166,7 @@ class RequestHandler:
 
     def run_xyz(self, data: str) -> str:
         data_map = {
-            dict: lambda x: dumps(x),
+            dict: lambda x: dumps(x, ensure_ascii=False),
             str: lambda x: x,
             bytes: lambda x: x
             }
@@ -164,7 +180,7 @@ class RequestHandler:
             dict: lambda x: x,
             bytes: lambda x: x
             }
-        parsed_data = data_map[type(data)](data)
+        parsed_data: Union[dict, bytes] = data_map[type(data)](data)
 
         if isinstance(parsed_data, bytes):
             return self.xyz

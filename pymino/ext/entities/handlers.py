@@ -4,6 +4,7 @@ from os import environ
 from binascii import unhexlify
 from contextlib import suppress
 from re import search
+from uuid import uuid4
 from typing import Callable
 from requests import Response as HTTPResponse
 
@@ -29,7 +30,7 @@ def headers(func: Callable) -> Callable:
 def response(func: Callable):
     def wrapper(*args, **kwargs):
         response: HTTPResponse = func(*args, **kwargs)
-        args[0].base_headers.update({"X-Request": response.headers.get("X-Response")})
+        args[0].base_headers.update({"X-Request": response.headers.get("X-Response", uuid4().hex)})
         return response
     return wrapper
 
