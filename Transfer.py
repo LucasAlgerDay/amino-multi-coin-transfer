@@ -2,8 +2,10 @@ from pymino import *
 from pymino.ext import *
 import aminofix
 from pyfiglet import figlet_format
-from colored import fore, style, attr
+from colored import fore, style
 from tqdm import tqdm
+from time import sleep
+
 
 
 print(
@@ -60,6 +62,7 @@ def vip():
         try:
             bot.community.subscribe(userId=objectId, comId= communityid)
             count += 500
+            sleep(3)
         except Exception as e:
             print(e)
     print(f"Coins enviadas {count}")
@@ -81,6 +84,7 @@ def blogs():
     for i in tqdm(range(total // 500)):
         bot.community.send_coins(coins= 500, blogId=objectId, comId= communityid)
         count += 500
+        sleep(3)
     print(f"Coins enviadas {count}")
 
 
@@ -100,6 +104,7 @@ def wikis():
     for i in tqdm(range(total // 500)):
         bot.community.send_coins(coins= 500, wikiId=objectId, comId= communityid)
         count += 500
+        sleep(3)
     print(f"Coins enviadas {count}")
 
 def chats():
@@ -118,6 +123,7 @@ def chats():
     for i in tqdm(range(total // 500)):
         bot.community.send_coins(coins= 500, chatId=objectId, comId= communityid)
         count += 500
+        sleep(3)
     print(f"Coins enviadas {count}")
 
 
