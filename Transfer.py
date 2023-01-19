@@ -50,6 +50,8 @@ def vip():
     disponibles = client.get_wallet_info().totalCoins
     print(f"Coins disponibles: {disponibles}")
     total =int(input("Cantidad a donar: "))
+    print("\nSugerencia: Para evitar error a la hora de donar no se sugiere bajar de 2 segundos")
+    tiempos = int(input("Tiempo por cada donacion: "))
     count = 0
     fok=client.get_from_code(vips)
     communityid=fok.path[1:fok.path.index("/")]
@@ -62,7 +64,7 @@ def vip():
         try:
             bot.community.subscribe(userId=objectId, comId= communityid)
             count += 500
-            sleep(3)
+            sleep(tiempos)
         except Exception as e:
             print(e)
     print(f"Coins enviadas {count}")
@@ -73,6 +75,8 @@ def blogs():
     disponibles = client.get_wallet_info().totalCoins
     print(f"Coins disponibles: {disponibles}")
     total =int(input("Cantidad a donar: "))
+    print("\nSugerencia: Para evitar error a la hora de donar no se sugiere bajar de 2 segundos")
+    tiempos = int(input("Tiempo por cada donacion: "))
     count = 0
     fok=client.get_from_code(blog)
     communityid=fok.path[1:fok.path.index("/")]
@@ -84,7 +88,7 @@ def blogs():
     for i in tqdm(range(total // 500)):
         bot.community.send_coins(coins= 500, blogId=objectId, comId= communityid)
         count += 500
-        sleep(3)
+        sleep(tiempos)
     print(f"Coins enviadas {count}")
 
 
@@ -93,6 +97,8 @@ def wikis():
     disponibles = client.get_wallet_info().totalCoins
     print(f"Coins disponibles: {disponibles}")
     total =int(input("Cantidad a donar: "))
+    print("\nSugerencia: Para evitar error a la hora de donar no se sugiere bajar de 2 segundos")
+    tiempos = int(input("Tiempo por cada donacion: "))
     count = 0
     fok=client.get_from_code(wiki)
     communityid=fok.path[1:fok.path.index("/")]
@@ -104,7 +110,7 @@ def wikis():
     for i in tqdm(range(total // 500)):
         bot.community.send_coins(coins= 500, wikiId=objectId, comId= communityid)
         count += 500
-        sleep(3)
+        sleep(tiempos)
     print(f"Coins enviadas {count}")
 
 def chats():
@@ -112,6 +118,8 @@ def chats():
     disponibles = client.get_wallet_info().totalCoins
     print(f"Coins disponibles: {disponibles}")
     total =int(input("Cantidad a donar: "))
+    print("\nSugerencia: Para evitar error a la hora de donar no se sugiere bajar de 2 segundos")
+    tiempos = int(input("Tiempo por cada donacion: "))
     count = 0
     fok=client.get_from_code(chat)
     communityid=fok.path[1:fok.path.index("/")]
@@ -123,7 +131,7 @@ def chats():
     for i in tqdm(range(total // 500)):
         bot.community.send_coins(coins= 500, chatId=objectId, comId= communityid)
         count += 500
-        sleep(3)
+        sleep(tiempos)
     print(f"Coins enviadas {count}")
 
 
